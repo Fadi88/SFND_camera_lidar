@@ -28,13 +28,15 @@ void showLidarTopview()
         int y = (-xw * imageSize.height / worldSize.height) + imageSize.height;
         int x = (-yw * imageSize.height / worldSize.height) + imageSize.width / 2;
 
-        cv::circle(topviewImg, cv::Point(x, y), 5, cv::Scalar(0, 0, 255), -1);
-        
-        // TODO: 
-        // 1. Change the color of the Lidar points such that 
+        // TODO:
+        // 1. Change the color of the Lidar points such that
         // X=0.0m corresponds to red while X=20.0m is shown as green.
-        // 2. Remove all Lidar points on the road surface while preserving 
+        // 2. Remove all Lidar points on the road surface while preserving
         // measurements on the obstacles in the scene.
+        if (it->z < -1.55 ) // kitti website sugests 1.73 meter however showed lots of noise
+            continue;
+
+        cv::circle(topviewImg, cv::Point(x, y), 5, cv::Scalar(0, 255 * (it->x) / 20, 255 * (1 - (it->x) / 20)), -1);
     }
 
     // plot distance markers
