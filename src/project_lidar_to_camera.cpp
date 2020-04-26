@@ -81,9 +81,13 @@ void projectLidarToCamera2()
     cv::Mat Y(3, 1, cv::DataType<double>::type);
     for (auto it = lidarPoints.begin(); it != lidarPoints.end(); ++it)
     {
+        float maxX = 25.0, maxY = 6.0, minZ = -1.4;
+        if (it->x > maxX || it->x < 0.0 || abs(it->y) > maxY || it->z < minZ || it->r < 0.01)
+            continue; // skip to next point
+
         // 1. Convert current Lidar point into homogeneous coordinates and store it in the 4D variable X.
         X = (cv::Mat_<double>(4, 1) << it->x, it->y, it->z, 1);
-;
+
         // 2. Then, apply the projection equation as detailed in lesson 5.1 to map X onto the image plane of the camera.
         // Store the result in Y.
         Y = P_rect_00 * R_rect_00 * RT * X;
